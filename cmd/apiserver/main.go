@@ -36,7 +36,6 @@ func GetEmailsVerification(w http.ResponseWriter, r *http.Request, _ httprouter.
 	type RequestBody struct {
 		Emails []string `json:"emails"`
 	}
-	var results []emailVerifier.Result
 	var requestBody RequestBody
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&requestBody)
@@ -46,19 +45,7 @@ func GetEmailsVerification(w http.ResponseWriter, r *http.Request, _ httprouter.
 	}
 	w.Header().Set("Content-Type", "application/json")
 
-	verifier := emailVerifier.NewVerifier()
-	for _, email := range requestBody.Emails {
-		ret, err := verifier.Verify(email)
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			continue
-		}
-		if !ret.Syntax.Valid {
-			_, _ = fmt.Fprint(w, "email address syntax is invalid")
-			continue
-		}
-		results = append(results, *ret)
-	}
+	results := emailVerifier.VerifyEmails(requestBody.Emails)
 	responseMap := map[string]interface{}{
 		"data": results,
 	}
