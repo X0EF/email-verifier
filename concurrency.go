@@ -4,45 +4,33 @@ import (
 	"sync"
 )
 
-func VerifyEmails(emails *[]string) []Result {
-	var results []Result
-	verifier := NewVerifier()
-	for _, email := range *emails {
-		ret, err := verifier.Verify(email)
-		if err != nil {
-			continue
-		}
-		// if !ret.Syntax.Valid {
-		// 	_, _ = fmt.Fprint(w, "email address syntax is invalid")
-		// 	continue
-		// }
-		results = append(results, *ret)
-	}
-	return results
+type ErrorEmail struct {
+	Email   string `json:"email"` // passed email address
+	Message string `json:"message"`
 }
 
-func VerifyEmailsV2(emails *[]string) []Result {
+type ResultAndError struct {
+	Results []Result     `json:"results"`
+	Errors  []ErrorEmail `json:"errors"`
+}
+
+func VerifyEmails(emails *[]string) ResultAndError {
 	var wg sync.WaitGroup
 	resultChan := make(chan Result, len(*emails))
 	var results []Result
+	var errors []ErrorEmail
 	verifier := NewVerifier()
 	for _, email := range *emails {
 		wg.Add(1)
 		go func(email string) {
 			defer wg.Done()
-
 			result, err := verifier.Verify(email)
 			if err != nil {
+				error := ErrorEmail{Email: email, Message: err.Error()}
+				errors = append(errors, error)
 			}
-
-			// Send the result to the channel
 			resultChan <- *result
 		}(email)
-		// if !ret.Syntax.Valid {
-		// 	_, _ = fmt.Fprint(w, "email address syntax is invalid")
-		// 	continue
-		// }
-		// results = append(results, *ret)
 	}
 	go func() {
 		wg.Wait()
@@ -51,5 +39,5 @@ func VerifyEmailsV2(emails *[]string) []Result {
 	for result := range resultChan {
 		results = append(results, result)
 	}
-	return results
+	return ResultAndError{Results: results, Errors: errors}
 }
