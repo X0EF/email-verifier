@@ -10,7 +10,7 @@
 Use `go get` to install this package.
 
 ```shell script
-go get -u github.com/AfterShip/email-verifier
+go get -u github.com/X0EF/email-verifier
 ```
 
 ## Usage
