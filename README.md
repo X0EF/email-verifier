@@ -1,6 +1,6 @@
 # email-verifier
 
-✉️ Fork of email-verifier project with added functionality for handeling large input emails
+✉️ Fork of [email-verifier](https://github.com/AfterShip/email-verifier) with added functionality for handeling large input emails
 
 ## Features
 - All existing features of parent project
