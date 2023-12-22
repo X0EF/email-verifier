@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
 
@@ -45,7 +46,14 @@ func GetEmailsVerification(w http.ResponseWriter, r *http.Request, _ httprouter.
 	}
 	w.Header().Set("Content-Type", "application/json")
 
-	results := emailVerifier.VerifyEmails(requestBody.Emails)
+	startTime := time.Now()
+	results := emailVerifier.VerifyEmails(&requestBody.Emails)
+	endTime := time.Now()
+	fmt.Printf("without routine took %s to execute \n", endTime.Sub(startTime))
+	startTime = time.Now()
+	results2 := emailVerifier.VerifyEmails(&requestBody.Emails)
+	endTime = time.Now()
+	fmt.Printf("with routine took %s to execute \n", endTime.Sub(startTime))
 	responseMap := map[string]interface{}{
 		"data": results,
 	}
@@ -54,6 +62,7 @@ func GetEmailsVerification(w http.ResponseWriter, r *http.Request, _ httprouter.
 		http.Error(w, "Error encoding JSON", http.StatusInternalServerError)
 		return
 	}
+	println(len(results2))
 }
 
 func main() {
