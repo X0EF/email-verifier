@@ -31,9 +31,9 @@ var (
 )
 
 func main() {
-	email := "example@exampledomain.org"
+	emails := ["example@exampledomain.org"]
 
-	ret, err := verifier.Verify(email)
+	ret, err := verifier.VerifyEmails(emails)
 	if err != nil {
 		fmt.Println("verify email address failed, error is: ", err)
 		return
