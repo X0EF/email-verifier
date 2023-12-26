@@ -3,7 +3,9 @@
 ✉️ Fork of [email-verifier](https://github.com/AfterShip/email-verifier) with added functionality for handling large input emails
 
 ## Features
+
 - All existing features of parent project
+- Restapi for handling multiple emails
 
 ## Install
 
@@ -64,7 +66,8 @@ func main() {
 	*/
 }
 ```
-## API 
+
+## API
 
 We provide a simple **self-hosted** [API server](https://github.com/X0EF/email-verifier/tree/main/cmd/apiserver) script for reference.
 
@@ -73,10 +76,12 @@ The API interface is very simple. All you need to do is to send a GET request wi
 The `email` parameter would be the target email you want to verify.
 
 POST to `https://{your_host}/v1/bulk/verifications`
-Body 
+Body
+
 ```
 {emails: ["example@mail.com", "sample@email.com"]}
 ```
+
 ## License
 
 This package is licensed under MIT license.
